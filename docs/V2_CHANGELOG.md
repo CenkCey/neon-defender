@@ -1,37 +1,35 @@
-# V1 → V2 değişiklikleri
+# Değişiklikler
 
-V1: 0.1.0 / e0a3e9d. V2: 2.0.0; iPhone 15 kullanıcı kabulü 27 Ekim 2026 tarihinde alındı.
+## 2.0.0 - 27 Ekim 2026
 
-| Alan | V1 | V2 |
-| --- | --- | --- |
-| Mod | Tek sonsuz arcade akışı | Ortak simülasyonda Campaign + Endless |
-| İçerik | Tek düşman, sürekli üretim | 30 level, 3 wave, 3 galaksi, 6 boss, 6 düşman türü |
-| İlerleme | Yerel en yüksek skor | Level kilitleri, yıldızlar, level best'leri, Endless kayıtları |
-| Hasar | Temas, 3 can, 1 sn koruma | Aynı temel + hostile mermi, Shield ve Endless breach |
-| Silah | 180 ms / 640 birim-sn | Aynı temel; 7 sn Rapid Fire 115 ms |
-| Atmosfer | Lacivert neon | Frontier, Nebula, Rift; iki saniyelik palet geçişi |
-| Mobil | Drag & Fire / Tilt & Tap | Aynı kontroller, kayıtlı kalibrasyon, genişletilmiş safe-area HUD |
-| Ses | Yok | Başlangıçta kapalı, hafif sentez geri bildirimi |
-| Dağıtım | Vite/PWA/Capacitor iOS | Aynı araçlar; yeni dependency yok |
-| Kalite | 84 test | 152 test; simülasyon, kayıt, boss adilliği ve ses/lifecycle kontrolleri |
+### Eklenenler
 
-## Yeni modüller
+- Üç galaksiye yayılan 30 görev; görev başına üç wave, bölüm seçimi ve briefing.
+- Campaign yıldızları, sıralı bölüm kilitleri ve bölüm bazlı en iyi skorlar.
+- Kesintisiz Endless: normal öldürmelere göre artan tier, kademeli zorluk ve kalıcı rekorlar.
+- Scout, Zigzag, Tank, Shooter, Splitter/child ve Striker düşmanları.
+- Altı boss: Sentinel, Guardian, Crimson Hunter, Nebula Core, Rift Stalker ve Void Overlord.
+- Boss başına hareket, sağlık fazları, uyarılan saldırılar ve güvenli kaçış koridorları.
+- Shield ve yedi saniyelik Rapid Fire güçlendirmeleri.
+- Menü, galaksi/level seçimi, sonuç, Settings ve Records ekranları.
+- Üç galaksi için yumuşak renk paleti geçişleri.
+- 14 kısa Web Audio efekti ve kalıcı SES AÇIK/KAPALI tercihi.
 
-- content.ts: düzenlenebilir level, düşman, boss ve zorluk içeriği.
-- director.ts: ortak wave/run ilerlemesi ve moda özgü kurallar.
-- bosses.ts / projectiles.ts: boss AI, telegraph ve düşman mermileri.
-- powerups.ts: drop, pickup ve iki güçlendirme.
-- progress.ts: güvenli, sürümlü kayıt ve v1 geçişi.
-- ui.ts: ekran/navigation ve HTML arayüz.
-- themes.ts / audio.ts: hafif palet geçişi ve isteğe bağlı ses.
-- tests/v2.test.mjs: davranış ve uç durum kontrolleri.
+### İyileştirmeler
 
-Orijinal player.ts çizimi, klavye/dokunma temeli, PWA altyapısı ve native wrapper korunur.
-Güncel [teknoloji rehberi](V2_TECHNOLOGY_GUIDE.md) ve [PDF](../output/pdf/neon-defender-v2-teknoloji-rehberi.pdf), eklenen sistemleri ve V1-V2 farklarını açıklar.
+- Endless tier değişimleri çatışmayı durdurmaz veya aktif mermileri temizlemez.
+- Boss karşılaşma kimliği tier ilerlemesinden bağımsızdır; her 10. yenilen boss eksikse bir can verir.
+- Tek aktif boss ve boss savaşlarında en fazla iki normal düşman baskısı.
+- Normal düşman hareketi, ateş baskısı ve zorluk ölçeği güçlendirildi.
+- Endless oyuncu hareketi ve atış hızı sınırlı biçimde kademeli artar.
+- Küçük hedeflerde çarpışma doğruluğu için en fazla 1/60 saniyelik simülasyon alt adımları.
+- Ses tekrar/voice sınırları; mute, ilk etkileşimde açılış ve arka plan/interruption yönetimi.
+- V1 rekor ve kontrol ayarlarını koruyan sürümlü localStorage kayıtları.
+- Klavye, Drag & Fire, Tilt & Tap, tam ekran, zoom/scroll engeli, PWA ve Capacitor iOS desteği korundu.
+- Otomatik test kapsamı 84 testten 152 teste genişletildi.
 
-## Tamamlanan V2: Phase A/B/C
+## 0.1.0
 
-- Endless artık öldürme tabanlı tier ile kesintisizdir; her 10. yenilen boss karşılaşmasında can ödülü kimliği ayrı izlenir.
-- Normal düşman baskısı güçlendirildi; altı boss’a özel hareket, HP, faz ve güvenli/uyarılan saldırılar eklendi.
-- 14 kısa sentez efekti; async ilk ses açılışı, mute, throttle/voice sınırı ve Web Audio lifecycle yönetimi tamamlandı.
-- Son sürüm iPhone’a yüklendi; kullanıcı cihaz kabulünü ve V2 yerel commit hazırlığını onayladı. Ayrıntılar: PHASE_A.md, PHASE_B.md, PHASE_C.md, V2_ACCEPTANCE.md.
+- Temel arcade akışı, gemi hareketi, sürekli ateş, düşman üretimi ve çarpışmalar.
+- Üç can, skor/rekor, Game Over ve yeniden başlatma.
+- Dokunma/eğim kontrolleri, responsive Canvas, çevrimdışı PWA ve native iOS paketleme.

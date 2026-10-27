@@ -1,6 +1,6 @@
 # Neon Defender
 
-> **V2.0:** 30 görev, 3 galaksi, 6 boss, kesintisiz Endless ve arcade sesleri. Yerel testler ve iPhone 15 kullanıcı kabulü tamamlandı. [V1-V2 farkları](docs/V2_CHANGELOG.md) · [Doğrulama kaydı](docs/V2_ACCEPTANCE.md) · [Teknoloji rehberi PDF](output/pdf/neon-defender-v2-teknoloji-rehberi.pdf).
+> **V2.0:** 30 görev, 3 galaksi, 6 boss, kesintisiz Endless ve arcade sesleri. [V1-V2 değişiklikleri](docs/V2_CHANGELOG.md).
 
 [![Test and build](https://github.com/CenkCey/neon-defender/actions/workflows/ci.yml/badge.svg)](https://github.com/CenkCey/neon-defender/actions/workflows/ci.yml)
 
@@ -14,7 +14,7 @@ Oyun motoru, backend veya harici görsel paketi kullanılmaz. Gemiler, düşmanl
 | :---: | :---: |
 | <img src="docs/screenshots/desktop.jpg" alt="Neon Defender tarayıcı sürümünde düşmanlarla mücadele" width="480"> | <img src="docs/screenshots/mobile.jpg" alt="Dikey ekranda skor, can, gemi ve ateş düğmesi" width="240"> |
 
-> Görüntüler V1 tarayıcı önizlemeleridir; V2 Campaign/boss ekranlarını göstermez. Güncel cihaz kabul kaydı aşağıdaki doğrulama belgelerindedir.
+> Görüntüler V1 tarayıcı önizlemeleridir; V2 Campaign/boss ekranlarını göstermez.
 
 ## Özellikler
 
@@ -89,7 +89,7 @@ npm run ios:open
 
 Xcode'da `ios/App/App.xcodeproj` açılır. Kendi geliştirme takımınızı seçin, iPhone'u bağlayın ve Run ile yükleyin. Swift Package Manager kullanılır; CocoaPods gerekmez. İmzalama bilgilerinizi repoya eklemeyin.
 
-Ayrıntılar: [iOS kurulumu](IOS_KURULUM.md) · [iPhone kontrol listesi](IPHONE_TESTING.md).
+Ayrıntılar: [iOS kurulumu](IOS_KURULUM.md).
 
 Native sürüm uzak bir web sitesini yüklemez; üretim dosyaları uygulamanın içine kopyalanır. Bu repo imzalı IPA, TestFlight veya App Store dağıtımı içermez.
 
@@ -113,7 +113,7 @@ npm run build
 
 Testler Node'un yerleşik test aracıyla çalışır. **V1’de 84, V2’de 152 otomatik test**; hareket/FPS tutarlılığı, atış aralığı, çarpışmalar, skor/can, yeniden başlatma, depolama, mobil koordinatlar, sensör durumları ve lifecycle temizliğini kapsar. V2 testleri ayrıca 30 level ilerlemesi, tier eşikleri, boss fazları/güvenli alanları, entity sınırları ve ses açma/mute/interruption davranışını denetler.
 
-GitHub Actions her push ve pull request üzerinde temiz bağımlılık kurulumu, test ve üretim derlemesini çalıştırır. Doğrulanan cihaz davranışları ve test sınırları [CHECKS.md](CHECKS.md) içindedir.
+GitHub Actions her push ve pull request üzerinde temiz bağımlılık kurulumu, test ve üretim derlemesini çalıştırır. Otomatik kontroller native kod imzalaması veya fiziksel cihaz testinin yerine geçmez.
 
 ## Kaynak yapısı
 
@@ -150,8 +150,7 @@ tests/               Otomatik testler
 scripts/             Üretim PWA önbelleği
 public/              Manifest ve uygulama ikonları
 ios/                 Xcode / Swift Package Manager projesi
-docs/                Sürüm/kabul/teknoloji belgeleri ve V1 ekranları
-output/pdf/          V1 ve V2 teknoloji rehberleri
+docs/                Sürüm değişiklikleri ve oyun ekran görüntüleri
 ```
 
 Tek `requestAnimationFrame` döngüsü giriş → hareket → atış → düşmanlar → çarpışmalar → çizim sırasını yönetir. Restart yeni döngü oluşturmaz. Masaüstü 960×540 mantıksal alan kullanır; mobil görünüm ekran oranına uyarlanır. Delta time 50 ms ile sınırlandırılır; V2 simülasyonu en fazla 1/60 sn alt adımlara bölünür. Canvas piksel yoğunluğu en fazla 2× olur.
@@ -159,10 +158,3 @@ Tek `requestAnimationFrame` döngüsü giriş → hareket → atış → düşma
 ## Ses
 
 Settings ekranında SES AÇIK seçin (varsayılan kapalı). Efektler Web Audio API ile sentezlenir; müzik veya harici ses dosyası yoktur. İlk kullanıcı etkileşimi ses bağlamını açar. OFF devam eden sesleri de keser; tercih mevcut localStorage kaydıyla korunur. iOS sistem sesi/sessiz modu kısıtları aşılmaz.
-
-## V2 belgeleri
-
-- [V1-V2 değişiklikleri](docs/V2_CHANGELOG.md)
-- [Teknoloji rehberi](docs/V2_TECHNOLOGY_GUIDE.md) ve [PDF sürümü](output/pdf/neon-defender-v2-teknoloji-rehberi.pdf)
-- [Phase A](docs/PHASE_A.md), [Phase B](docs/PHASE_B.md), [Phase C](docs/PHASE_C.md): uygulama aşamalarının tarihsel kayıtları.
-- [Kabul ve test kapsamı](docs/V2_ACCEPTANCE.md): otomatik kanıtlar ile kullanıcı cihaz onayının ayrımı.

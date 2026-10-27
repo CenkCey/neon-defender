@@ -50,7 +50,7 @@ npm run ios:open
 
 Xcode'da tekrar Run kullanın. `ios:sync` mevcut native projeyi silip yeniden oluşturmaz; web üretim dosyalarını ve plugin bağımlılıklarını eşler.
 
-Native menü ve oyun ekranı sabittir; WebView yakınlaştırması/kaydırması kapalıdır. Kontrol izinleri ve gerçek sensör verisi denetimi korunur. Test adımları [IPHONE_TESTING.md](IPHONE_TESTING.md) içindedir.
+Native menü ve oyun ekranı sabittir; WebView yakınlaştırması/kaydırması kapalıdır. Kontrol izinleri ve gerçek sensör verisi denetimi korunur.
 
 ## Dağıtım
 

@@ -23,5 +23,15 @@ ios/Signing.local.xcconfig
 .env.*
 !.env.example
 
-# Document rendering intermediates (final guides live in output/pdf/)
+# Local document artifacts and rendering intermediates
 /tmp/
+
+# Personal development notes and reports stay local; docs uses a public allowlist.
+/AGENTS.md
+/CHECKS.md
+/IPHONE_TESTING.md
+/output/
+/.private/
+/docs/*
+!/docs/V2_CHANGELOG.md
+!/docs/screenshots/
