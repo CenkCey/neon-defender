@@ -228,3 +228,53 @@ kbd { font: 10px ui-monospace, monospace; color: #b9c6d8; border: 1px solid #354
   body.game-session .mobile-controls { left: 60%; }
   body.game-session .overlay-panel h2 { font-size: 23px; margin-bottom: 8px; }
 }
+
+/* V2 extends the existing neon page; menus are HTML, gameplay remains Canvas. */
+.mission-strip { display: flex; justify-content: space-between; gap: 8px; padding: 0 24px 10px; color: #9cabc3; font: 10px ui-monospace, monospace; letter-spacing: .5px; }
+#power-status { color: #ffc56e; white-space: nowrap; }
+#screen-content { width: 100%; }
+.menu-stack { display: grid; gap: 9px; max-width: 290px; margin: 0 auto; }
+.menu-row { display: flex; justify-content: center; gap: 10px; margin-top: 12px; }
+.overlay-panel button { min-height: 44px; }
+.overlay-panel button.secondary { background: #142031; color: #c5d4e7; border-color: #35475f; }
+.overlay-panel button.secondary:hover { background: #20324a; }
+.overlay-panel button:disabled { cursor: default; opacity: .36; }
+.menu-caption { font-size: 10px; color: #8192ad; margin: 15px 0 0; }
+.galaxy-list { display: grid; gap: 10px; margin: 0 0 15px; }
+.galaxy-list button { display: grid; gap: 6px; text-align: left; padding: 12px 18px; }
+.overlay-panel button small { display: block; font-size: 10px; font-weight: 400; color: #a3b6cb; letter-spacing: .5px; margin-top: 4px; }
+.level-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 7px; margin: 0 0 15px; }
+.level-grid button { padding: 10px 2px; min-height: 58px; }
+.level-grid button small { font-size: 9px; color: #b3a1df; }
+.brief-text, .result-data { color: #b8c8dc; font-size: 12px; line-height: 1.8; margin: 0 0 18px; }
+.result-stars { font-size: 32px; letter-spacing: 6px; color: #ffd287; margin: 0 0 8px; }
+.record-list { margin: 0 0 18px; font-size: 12px; }
+.record-list > div { display: flex; justify-content: space-between; gap: 20px; border-bottom: 1px solid #263345; padding: 10px 0; }
+.record-list dt { color: #8f9fba; font-size: 10px; } .record-list dd { margin: 0; color: var(--cyan); }
+.pause-button { display: inline-grid; place-items: center; }
+.overlay-panel > #overlay-text { display: block; }
+body.native-app:not(.game-session) .mission-strip { flex: 0 0 auto; font-size: 8px; padding: 0 15px 7px; }
+body.native-app .intro-text { display: none; }
+body.native-app[data-screen="settings"] .mobile-controls { margin: 8px 12px 12px; }
+@media (max-width: 760px), (pointer: coarse) {
+  .overlay-panel { max-width: 360px; }
+  .overlay-panel > #overlay-text { font-size: 11px; line-height: 1.45; margin: 0 0 15px; }
+  .overlay-panel h2 { font-size: 24px; margin: 0 0 12px; }
+  .overlay-panel button, body.game-session .overlay-panel button { min-height: 44px; font-size: 12px; padding: 11px 16px; }
+  .level-grid button, body.game-session .level-grid button { min-height: 56px; padding: 8px 2px; }
+  .menu-row button { flex: 1; }
+  .mission-strip { font-size: 9px; padding: 8px 16px; min-height: 27px; }
+  body.game-session .game-section { grid-template-rows: auto auto minmax(0, 1fr); }
+  body.game-session .mission-strip { padding: 12px 65px 2px 18px; align-items: center; font-size: 8px; }
+  body.game-session .hud { padding-top: 9px; padding-bottom: 10px; }
+  body.game-session .game-overlay { padding: 20px; }
+  body.game-session .overlay-panel h2 { font-size: 25px; margin-bottom: 12px; }
+  body.game-session[data-screen="settings"] .game-overlay { padding-bottom: 220px; }
+  body:not(.native-app):not(.game-session) .canvas-frame { min-height: 350px; }
+  body:not(.native-app):not(.game-session) canvas { min-height: 350px; object-fit: contain; }
+  body[data-screen="settings"] .mobile-controls { touch-action: manipulation; }
+}
+@media (pointer: coarse) and (orientation: landscape) {
+  body.game-session::after { content: 'Oyuna devam etmek için telefonu dikey tut.'; position: fixed; inset: 0; z-index: 50; background: #080d18f5; color: var(--cyan); display: grid; place-items: center; text-align: center; padding: 40px; font-size: 20px; }
+}
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }

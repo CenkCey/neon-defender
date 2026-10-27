@@ -1,117 +1,75 @@
 import './style.css';
 import { startGame } from './game.ts';
-import { createHighScoreStore } from './high-score.ts';
-import type { GameState } from './world.ts';
+import { createProgressStore } from './progress.ts';
+import { createInterface, element } from './ui.ts';
 import { registerOffline } from './pwa.ts';
 import { isNativeApp } from './native.ts';
+import { createAudio, bindAudioLifecycle } from './audio.ts';
+import type { GameState } from './world.ts';
 
 document.body.classList.toggle('native-app', isNativeApp);
-
-const canvas = document.querySelector<HTMLCanvasElement>('#game-canvas');
-const inputStatus = document.querySelector<HTMLElement>('#input-status');
-const errorMessage = document.querySelector<HTMLElement>('#game-error');
-
-if (!canvas || !inputStatus || !errorMessage) throw new Error('Oyun arayüzü bulunamadı.');
-
-function element<T extends HTMLElement>(id: string): T {
-  const found = document.getElementById(id);
-  if (!found) throw new Error(`Arayüz öğesi eksik: ${id}`);
-  return found as T;
-}
-
-const score = element('hud-score');
-const lives = element('hud-lives');
-const best = element('hud-best');
-const overlay = element('game-overlay');
-const overlayTitle = element('overlay-title');
-const overlayText = element('overlay-text');
-const overlayScores = element('overlay-scores');
-const finalScore = element('final-score');
-const finalBest = element('final-best');
-const playButton = element<HTMLButtonElement>('play-button');
-const overlayHint = element('overlay-hint');
-const saveStatus = element('save-status');
-const announcement = element('game-announcement');
-const pauseButton = element<HTMLButtonElement>('pause-button');
-const menuButton = element<HTMLButtonElement>('menu-button');
-const mobileElements = {
-  panel: element('mobile-controls'),
-  select: element<HTMLSelectElement>('control-mode'),
-  enable: element<HTMLButtonElement>('enable-tilt'),
-  calibrate: element<HTMLButtonElement>('calibrate-tilt'),
-  fire: element<HTMLButtonElement>('touch-fire'),
-  status: element('mobile-status'),
-};
 let storage: Storage | undefined;
-try { storage = window.localStorage; } catch { /* Session best still works. */ }
-const highScore = createHighScoreStore(storage);
-let signature = '';
-let lastPhase = '';
-let lastLives = 3;
-
-function renderInterface(state: GameState, paused: boolean) {
-  // The session stays fullscreen during pause/Game Over, until returning to menu.
-  document.body.classList.toggle('game-session', state.phase !== 'MENU');
-  document.documentElement.classList.toggle('game-session', state.phase !== 'MENU');
-  const next = [state.phase, state.score, state.highScore, state.lives, paused, highScore.available].join('|');
-  if (signature === next) return;
-  signature = next;
-  score.textContent = String(state.score).padStart(4, '0');
-  lives.textContent = `${state.lives} / 3`;
-  lives.setAttribute('aria-label', `Kalan can: ${state.lives}`);
-  best.textContent = String(state.highScore).padStart(4, '0');
-  overlay.hidden = state.phase === 'PLAYING' && !paused;
-  overlayScores.hidden = state.phase !== 'GAME_OVER';
-  pauseButton.hidden = state.phase !== 'PLAYING' || paused;
-  menuButton.hidden = state.phase === 'MENU' || !paused && state.phase !== 'GAME_OVER';
-  const over = state.phase === 'GAME_OVER';
-  overlayTitle.textContent = over ? 'GAME OVER' : paused ? 'Kısa bir mola.' : 'Göreve hazır mısın?';
-  overlayText.textContent = over ? 'Bir uçuş biter. Bir yenisi başlar.' : paused ? 'Hazır olduğunda kaldığın yerden devam et.' : 'Üç can. Sonsuz uzay. Her isabet 100 puan.';
-  playButton.textContent = over ? 'Yeniden başlat' : paused ? 'Devam et' : 'Oyuna başla';
-  overlayHint.textContent = paused ? 'Devam et ile uçuşa dön.' : 'Enter veya R ile de başlayabilirsin.';
-  finalScore.textContent = String(state.score);
-  finalBest.textContent = String(state.highScore);
-  if (canvas && inputStatus) {
-    canvas.tabIndex = overlay.hidden ? 0 : -1;
-    inputStatus.textContent = over ? 'Uçuş tamamlandı' : paused ? 'Duraklatıldı' : state.phase === 'MENU' ? 'Görev bekleniyor' : 'Kontroller etkin';
-    inputStatus.classList.toggle('active', state.phase === 'PLAYING' && !paused);
-  }
-  saveStatus.textContent = highScore.available ? (isNativeApp ? 'Rekorun bu cihazda saklanır.' : 'Rekorun bu tarayıcıda saklanır.') : 'Rekorun bu oturumda korunuyor.';
-  if (state.lives < lastLives) announcement.textContent = over ? `Oyun bitti. Skor: ${state.score}. Rekor: ${state.highScore}.` : `Hasar aldın. Kalan can: ${state.lives}.`;
-  if (lastPhase !== state.phase && state.phase === 'PLAYING') announcement.textContent = 'Yeni uçuş başladı. Üç canın var.';
-  if (lastPhase !== state.phase && state.phase !== 'PLAYING') playButton.focus({ preventScroll: true });
-  lastPhase = state.phase;
-  lastLives = state.lives;
-}
-
-function focusCanvas() {
-  controller?.startOrResume();
-}
-function pause() { canvas?.blur(); pauseButton.focus({ preventScroll: true }); }
-function returnToMenu() { controller?.returnToMenu(); }
-
+try { storage = window.localStorage; } catch { /* In-memory progress is still usable. */ }
+const progress = createProgressStore(storage);
+const audio = createAudio();
+audio.setEnabled(progress.value.settings.soundEnabled);
+const unbindAudio = bindAudioLifecycle(audio);
+const canvas = element<HTMLCanvasElement>('game-canvas');
+const mobile = {
+  panel: element('mobile-controls'), select: element<HTMLSelectElement>('control-mode'),
+  enable: element<HTMLButtonElement>('enable-tilt'), calibrate: element<HTMLButtonElement>('calibrate-tilt'),
+  fire: element<HTMLButtonElement>('touch-fire'), status: element('mobile-status'),
+};
+// Existing v1 controls keep their key for backward compatibility.
+try { storage?.setItem('neon-defender.controls.v1', progress.value.settings.controlMode); } catch { /* Optional storage. */ }
 let controller: ReturnType<typeof startGame> | undefined;
-try {
-  controller = startGame(canvas, renderInterface, highScore, mobileElements);
-  playButton.addEventListener('click', focusCanvas);
-  pauseButton.addEventListener('click', pause);
-  menuButton.addEventListener('click', returnToMenu);
-} catch (error) {
-  errorMessage.textContent = error instanceof Error ? error.message : 'Oyun başlatılamadı.';
-  errorMessage.hidden = false;
-  inputStatus.textContent = 'Oyun başlatılamadı';
-  playButton.disabled = true;
+let latest: GameState | undefined;
+let actionLocked = false;
+const ui = createInterface(progress, (action, value) => {
+  if (actionLocked) return;
+  actionLocked = true;
+  queueMicrotask(() => { actionLocked = false; });
+  if (action !== 'sound') void audio.gesture(['launch', 'endless', 'retry', 'next', 'resume'].includes(action) ? 'start' : 'menu');
+  const leave = () => { audio.setPaused(true); controller?.returnToMenu(); };
+  switch (action) {
+    case 'home': leave(); ui.navigate('home'); break;
+    case 'campaign': leave(); ui.navigate('galaxies'); break;
+    case 'galaxy': ui.navigate('levels', value); break;
+    case 'level': ui.navigate('brief', value); break;
+    case 'levels': ui.navigate('levels'); break;
+    case 'launch': if (latest?.phase === 'MENU') { ui.navigate('run'); controller?.start('campaign', ui.level); } break;
+    case 'endless': if (latest?.phase !== 'PLAYING') { ui.navigate('run'); controller?.start('endless'); } break;
+    case 'resume': ui.navigate('run'); controller?.startOrResume(); break;
+    case 'retry': ui.navigate('run'); controller?.retry(); break;
+    case 'next':
+      if (latest?.phase === 'LEVEL_COMPLETE' && latest.run && latest.run.level < 30) controller?.start('campaign', latest.run.level + 1);
+      break;
+    case 'level-select': { const galaxy = latest?.run?.galaxy ?? ui.galaxy; leave(); ui.navigate('levels', galaxy); break; }
+    case 'settings': controller?.pause(); ui.navigate('settings'); break;
+    case 'back-settings': ui.navigate(latest?.phase === 'MENU' ? 'home' : 'run'); break;
+    case 'records': ui.navigate('records'); break;
+    case 'sound': progress.settings({ soundEnabled: !progress.value.settings.soundEnabled }); audio.setEnabled(progress.value.settings.soundEnabled); void audio.gesture('menu'); ui.refresh(); break;
+  }
+});
+function changed(state: GameState, paused: boolean) {
+  latest = state;
+  audio.setPaused(paused);
+  ui.render(state, paused);
 }
-
-// Vite updates must not leave a second loop or old keyboard listeners running.
-if (import.meta.hot) {
-  import.meta.hot.dispose(() => {
-    controller?.dispose();
-    playButton.removeEventListener('click', focusCanvas);
-    pauseButton.removeEventListener('click', pause);
-    menuButton.removeEventListener('click', returnToMenu);
-    document.body.classList.remove('game-session');
-    document.documentElement.classList.remove('game-session');
-  });
+const pauseButton = element<HTMLButtonElement>('pause-button');
+function pause() { void audio.gesture('menu'); controller?.pause(); }
+function saveControl() { progress.settings({ controlMode: mobile.select.value === 'tilt' ? 'tilt' : 'drag' }); }
+try {
+  controller = startGame(canvas, changed, progress, mobile, { sound: audio.play, suspend: audio.suspend });
+  pauseButton.addEventListener('click', pause);
+  mobile.select.addEventListener('change', saveControl);
+} catch (error) {
+  element('game-error').textContent = error instanceof Error ? error.message : 'Oyun başlatılamadı.';
+  element('game-error').hidden = false;
 }
 registerOffline(element('pwa-status'));
+if (import.meta.hot) import.meta.hot.dispose(() => {
+  controller?.dispose(); ui.dispose(); unbindAudio(); audio.dispose();
+  pauseButton.removeEventListener('click', pause); mobile.select.removeEventListener('change', saveControl);
+  document.body.classList.remove('game-session'); document.documentElement.classList.remove('game-session');
+});

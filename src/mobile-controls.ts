@@ -23,7 +23,7 @@ const messages: Record<TiltStatus, string> = {
   unavailable: 'Sensör verisi gelmedi. Drag & Fire etkin.',
 };
 
-export function createMobileControls(canvas: HTMLCanvasElement, getPlayer: () => Player, ui: MobileElements, getBounds?: () => Bounds) {
+export function createMobileControls(canvas: HTMLCanvasElement, getPlayer: () => Player, ui: MobileElements, getBounds?: () => Bounds, preferences?: { calibration: number | null; onCalibration: (angle: number) => void; onMode: (mode: MobileMode) => void }) {
   let mode: MobileMode = 'drag';
   let active = false;
   let disposed = false;
@@ -34,7 +34,7 @@ export function createMobileControls(canvas: HTMLCanvasElement, getPlayer: () =>
   }, (reason) => {
     setMode('drag');
     ui.status.textContent = messages[reason];
-  }, undefined, isNativeApp);
+  }, undefined, isNativeApp, preferences?.calibration, preferences?.onCalibration);
   try { if (localStorage.getItem(CONTROL_MODE_KEY) === 'tilt' && tilt.supported) mode = 'tilt'; } catch { /* Optional preference. */ }
 
   function paint() {
@@ -58,6 +58,7 @@ export function createMobileControls(canvas: HTMLCanvasElement, getPlayer: () =>
     } else ui.status.textContent = mode === 'drag' ? 'Gemini yatay sürükle. Sağdaki küçük düğmeyle ateş et.' : messages.idle;
     paint();
     try { localStorage.setItem(CONTROL_MODE_KEY, mode); } catch { /* Session preference still works. */ }
+    preferences?.onMode(mode);
     if (mode === 'tilt' && tilt.permitted) void tilt.enable();
   }
   function change() { setMode(ui.select.value === 'tilt' ? 'tilt' : 'drag'); }

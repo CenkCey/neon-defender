@@ -22,3 +22,6 @@ ios/Signing.local.xcconfig
 .env
 .env.*
 !.env.example
+
+# Document rendering intermediates (final guides live in output/pdf/)
+/tmp/

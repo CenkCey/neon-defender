@@ -21,7 +21,7 @@ export function tiltAxis(angle: number, neutral: number): number {
 }
 
 /** Permission and usable data are separate states; no prompts occur at creation. */
-export function createTiltInput(onStatus: (status: TiltStatus) => void, onUnavailable: (status: TiltStatus) => void, host = window as unknown as TiltHost, native = false) {
+export function createTiltInput(onStatus: (status: TiltStatus) => void, onUnavailable: (status: TiltStatus) => void, host = window as unknown as TiltHost, native = false, savedCalibration: number | null = null, onCalibration?: (angle: number) => void) {
   let status: TiltStatus = 'idle';
   let permission: 'unknown' | 'granted' | 'denied' = 'unknown';
   let permissionRequest: Promise<'granted' | 'denied'> | null = null;
@@ -33,6 +33,7 @@ export function createTiltInput(onStatus: (status: TiltStatus) => void, onUnavai
   let neutral: number | null = null;
   let smooth = 0;
   let lastScreenAngle: number | null = null;
+  let restoredCalibration = false;
   // Capacitor's bundled WKWebView uses capacitor://, not a remote HTTPS page.
   const supported = Boolean((host.isSecureContext || native) && host.DeviceOrientationEvent);
 
@@ -48,7 +49,10 @@ export function createTiltInput(onStatus: (status: TiltStatus) => void, onUnavai
     const angle = host.screen?.orientation?.angle ?? host.orientation ?? 0;
     if (lastScreenAngle !== angle) { neutral = null; smooth = 0; lastScreenAngle = angle; }
     latest = horizontalAngle(beta, gamma, angle);
-    if (neutral === null) neutral = latest;
+    if (neutral === null) {
+      neutral = !restoredCalibration && savedCalibration !== null && Number.isFinite(savedCalibration) ? savedCalibration : latest;
+      restoredCalibration = true;
+    }
     stopTimer();
     setStatus('ready');
   }
@@ -92,6 +96,7 @@ export function createTiltInput(onStatus: (status: TiltStatus) => void, onUnavai
     smooth = 0;
     if (latest === null) return false;
     neutral = latest;
+    onCalibration?.(neutral);
     return true;
   }
   return {

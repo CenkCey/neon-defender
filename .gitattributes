@@ -1,0 +1,2 @@
+# Treat generated guides as binary documents, without line-ending conversion.
+*.pdf binary
