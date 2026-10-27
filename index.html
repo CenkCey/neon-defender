@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#080b13" />
+    <meta name="description" content="Neon Defender — Canvas üzerinde küçük bir uzay oyunu. İlk aşama: gemi kontrolü ve uçuş alanı." />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23080b13'/%3E%3Cpath d='M16 5 27 26 16 21 5 26Z' fill='%2368e5ef'/%3E%3C/svg%3E" />
+    <title>Neon Defender · Uçuş testi</title>
+  </head>
+  <body>
+    <div class="page">
+      <header class="site-header">
+        <a class="brand" href="./" aria-label="Neon Defender ana sayfa">
+          <span class="brand-icon" aria-hidden="true">N<span>↗</span></span>
+          <span>NEON<span class="brand-light">DEFENDER</span></span>
+        </a>
+        <span class="phase-badge"><span aria-hidden="true"></span> AŞAMA 01 / UÇUŞ TESTİ</span>
+      </header>
+
+      <main>
+        <section class="intro" aria-labelledby="game-title">
+          <p class="eyebrow">KÜÇÜK BİR GEMİ. KOCAMAN BİR EVREN.</p>
+          <h1 id="game-title">NEON <span>DEFENDER</span><span class="title-period">.</span></h1>
+          <p class="intro-text">Karanlığın içinde, kontrol sende.</p>
+        </section>
+
+        <section class="game-section" aria-label="Uzay gemisi uçuş alanı">
+          <div class="game-toolbar">
+            <span class="sector-label"><span aria-hidden="true">⌖</span> UÇUŞ ALANI <span class="sector-number">/ 01</span></span>
+            <span class="input-status" id="input-status" role="status">Kontrolleri etkinleştirmek için alanı seç</span>
+          </div>
+          <div class="canvas-frame">
+            <canvas id="game-canvas" width="960" height="540" tabindex="0" aria-label="Neon Defender oyun alanı. WASD veya ok tuşlarıyla gemiyi hareket ettir." aria-describedby="controls-hint">
+              Bu uygulama HTML5 Canvas desteği gerektirir. Gemiyi WASD veya ok tuşlarıyla kontrol edebilirsiniz.
+            </canvas>
+            <span class="corner top-left" aria-hidden="true"></span>
+            <span class="corner top-right" aria-hidden="true"></span>
+            <span class="corner bottom-left" aria-hidden="true"></span>
+            <span class="corner bottom-right" aria-hidden="true"></span>
+          </div>
+          <p id="game-error" class="game-error" role="alert" hidden></p>
+          <div class="controls-bar" id="controls-hint">
+            <div class="control-guide">
+              <span class="key-group" aria-label="W A S D"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></span>
+              <span class="or-label">veya</span>
+              <span class="key-group arrow-group" aria-label="Ok tuşları"><kbd>↑</kbd><kbd>←</kbd><kbd>↓</kbd><kbd>→</kbd></span>
+              <span class="move-label">Hareket et</span>
+            </div>
+            <p class="focus-hint">Oyun alanını tıkla ya da <kbd>Tab</kbd> ile seç.</p>
+          </div>
+        </section>
+
+        <footer class="site-footer"><span class="footer-note">Önce gemini tanı. Gerisi sonra.</span><span>VANILLA TYPESCRIPT <span aria-hidden="true">/</span> HTML5 CANVAS</span></footer>
+      </main>
+    </div>
+    <noscript><p class="noscript-note">Uçuş testi için tarayıcınızda JavaScript etkin olmalıdır.</p></noscript>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
