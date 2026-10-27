@@ -1,5 +1,7 @@
 # Neon Defender
 
+[![Test and build](https://github.com/CenkCey/neon-defender/actions/workflows/ci.yml/badge.svg)](https://github.com/CenkCey/neon-defender/actions/workflows/ci.yml)
+
 **Küçük bir gemi. Kocaman bir evren.**
 
 TypeScript ve HTML5 Canvas ile geliştirilen neon temalı bir 2D uzay oyunu. Masaüstünde klavyeyle, telefonda dokunarak oynanır. Aynı kaynak kodu Capacitor ile yerel iOS uygulaması olarak da çalışır.
@@ -30,6 +32,8 @@ Oyun motoru, backend veya harici görsel paketi kullanılmaz. Gemiler, düşmanl
 **Gereksinimler:** Node.js 22.12 veya üzeri ve npm.
 
 ```sh
+git clone https://github.com/CenkCey/neon-defender.git
+cd neon-defender
 npm ci
 npm run dev
 ```
@@ -138,3 +142,7 @@ Tek `requestAnimationFrame` döngüsü giriş → hareket → atış → düşma
 ## Katkıda bulunma
 
 Küçük ve odaklı değişiklikler önerin. Oyun motoru, backend veya harici görsel bağımlılığı eklemeyin. Değişiklikten önce [AGENTS.md](AGENTS.md) kurallarını okuyun; testleri ve üretim derlemesini çalıştırın. Mobil davranış için gerçek cihaz testi ile tarayıcı önizlemesini ayrı belirtin.
+
+## Lisans
+
+Bu depoya lisans dosyası eklenmemiştir.
