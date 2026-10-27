@@ -138,11 +138,3 @@ docs/screenshots/    README görüntüleri
 ```
 
 Tek `requestAnimationFrame` döngüsü giriş → hareket → atış → düşmanlar → çarpışmalar → çizim sırasını yönetir. Restart yeni döngü oluşturmaz. Masaüstü 960×540 mantıksal alan kullanır; mobil görünüm ekran oranına uyarlanır. Delta time 50 ms ile sınırlandırılır, Canvas piksel yoğunluğu en fazla 2× olur.
-
-## Katkıda bulunma
-
-Küçük ve odaklı değişiklikler önerin. Oyun motoru, backend veya harici görsel bağımlılığı eklemeyin. Değişiklikten önce [AGENTS.md](AGENTS.md) kurallarını okuyun; testleri ve üretim derlemesini çalıştırın. Mobil davranış için gerçek cihaz testi ile tarayıcı önizlemesini ayrı belirtin.
-
-## Lisans
-
-Bu depoya lisans dosyası eklenmemiştir.
