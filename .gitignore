@@ -4,3 +4,21 @@ dist/
 .cache/
 .DS_Store
 *.local
+Neon-Defender-Web.zip
+ios/App/App/public/
+ios/App/App/capacitor.config.json
+ios/App/App/config.xml
+ios/App/CapApp-SPM/.build/
+**/xcuserdata/
+*.xcuserstate
+
+# Local setup records, generated archives, and personal signing
+.openai/
+/preview*
+ios/Signing.local.xcconfig
+*.ipa
+*.p12
+*.mobileprovision
+.env
+.env.*
+!.env.example

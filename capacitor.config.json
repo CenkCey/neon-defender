@@ -1,0 +1,12 @@
+{
+  "appId": "app.neondefender.game",
+  "appName": "Neon Defender",
+  "webDir": "dist",
+  "backgroundColor": "#080d18",
+  "ios": {
+    "zoomEnabled": false,
+    "scrollEnabled": false,
+    "contentInset": "never",
+    "preferredContentMode": "mobile"
+  }
+}

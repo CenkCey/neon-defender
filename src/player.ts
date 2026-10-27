@@ -1,8 +1,8 @@
 import type { MovementInput } from './input.ts';
+import { GAME_CONFIG } from './config.ts';
 
 export const PLAYER_WIDTH = 44;
 export const PLAYER_HEIGHT = 56;
-const PLAYER_SPEED = 300; // Logical pixels per second.
 
 export interface Player {
   x: number;
@@ -18,11 +18,14 @@ export function createPlayer(bounds: Bounds): Player {
   return { x: bounds.width / 2, y: bounds.height * 0.8 };
 }
 
-export function updatePlayer(player: Player, input: MovementInput, deltaTime: number, bounds: Bounds) {
+export function updatePlayer(player: Player, input: MovementInput, deltaTime: number, bounds: Bounds, speed: number = GAME_CONFIG.initialPlayerSpeed) {
   // Normalization keeps diagonal movement at the same speed as one axis.
-  const length = Math.hypot(input.x, input.y);
-  if (length > 0) {
-    const distance = PLAYER_SPEED * deltaTime;
+  const length = Math.max(1, Math.hypot(input.x, input.y));
+  if (input.targetX !== undefined && Number.isFinite(input.targetX)) {
+    const distance = speed * deltaTime;
+    player.x += Math.max(-distance, Math.min(distance, input.targetX - player.x));
+  } else {
+    const distance = speed * deltaTime;
     player.x += (input.x / length) * distance;
     player.y += (input.y / length) * distance;
   }

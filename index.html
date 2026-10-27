@@ -2,11 +2,16 @@
 <html lang="tr">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Neon Defender" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png" />
     <meta name="theme-color" content="#080b13" />
-    <meta name="description" content="Neon Defender — Canvas üzerinde küçük bir uzay oyunu. İlk aşama: gemi kontrolü ve uçuş alanı." />
+    <meta name="description" content="Neon Defender — üç can, neon düşmanlar ve sonsuz uzay. Küçük bir Canvas arcade oyunu." />
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23080b13'/%3E%3Cpath d='M16 5 27 26 16 21 5 26Z' fill='%2368e5ef'/%3E%3C/svg%3E" />
-    <title>Neon Defender · Uçuş testi</title>
+    <title>Neon Defender · Arcade</title>
   </head>
   <body>
     <div class="page">
@@ -15,29 +20,50 @@
           <span class="brand-icon" aria-hidden="true">N<span>↗</span></span>
           <span>NEON<span class="brand-light">DEFENDER</span></span>
         </a>
-        <span class="phase-badge"><span aria-hidden="true"></span> AŞAMA 01 / UÇUŞ TESTİ</span>
+        <span class="phase-badge"><span aria-hidden="true"></span> ARCADE / SONSUZ UÇUŞ</span>
       </header>
 
       <main>
         <section class="intro" aria-labelledby="game-title">
           <p class="eyebrow">KÜÇÜK BİR GEMİ. KOCAMAN BİR EVREN.</p>
           <h1 id="game-title">NEON <span>DEFENDER</span><span class="title-period">.</span></h1>
-          <p class="intro-text">Karanlığın içinde, kontrol sende.</p>
+          <p class="intro-text">Rotanı çiz. Düşmanları durdur. Kendi rekorunu aş.</p>
         </section>
 
         <section class="game-section" aria-label="Uzay gemisi uçuş alanı">
           <div class="game-toolbar">
             <span class="sector-label"><span aria-hidden="true">⌖</span> UÇUŞ ALANI <span class="sector-number">/ 01</span></span>
-            <span class="input-status" id="input-status" role="status">Kontrolleri etkinleştirmek için alanı seç</span>
+            <div class="toolbar-actions"><span class="input-status" id="input-status" role="status">Kontrolleri etkinleştirmek için alanı seç</span><button class="pause-button" id="pause-button" type="button" aria-label="Oyunu duraklat" hidden>Ⅱ</button></div>
+          </div>
+          <div class="hud" aria-label="Oyun bilgileri">
+            <div class="hud-stat"><span>SKOR</span><output id="hud-score">0000</output></div>
+            <div class="hud-stat lives-stat"><span>CAN <span aria-hidden="true">♡</span></span><output id="hud-lives" aria-label="Kalan can: 3">3 / 3</output></div>
+            <div class="hud-stat"><span>REKOR</span><output id="hud-best">0000</output></div>
           </div>
           <div class="canvas-frame">
-            <canvas id="game-canvas" width="960" height="540" tabindex="0" aria-label="Neon Defender oyun alanı. WASD veya ok tuşlarıyla gemiyi hareket ettir." aria-describedby="controls-hint">
-              Bu uygulama HTML5 Canvas desteği gerektirir. Gemiyi WASD veya ok tuşlarıyla kontrol edebilirsiniz.
+            <canvas id="game-canvas" width="960" height="540" tabindex="0" aria-label="Neon Defender oyun alanı. WASD veya ok tuşlarıyla hareket et. Space ile ateş et." aria-describedby="controls-hint">
+              Bu uygulama HTML5 Canvas desteği gerektirir. WASD veya ok tuşlarıyla hareket edin, Space ile ateş edin.
             </canvas>
+            <button id="touch-fire" class="touch-fire" type="button" aria-label="Ateş et; sürekli ateş için basılı tut" hidden><span aria-hidden="true">⌖</span></button>
+            <div class="game-overlay" id="game-overlay" role="region" aria-labelledby="overlay-title">
+              <div class="overlay-panel">
+                <span class="overlay-eyebrow" aria-hidden="true">NEON DEFENDER</span>
+                <h2 id="overlay-title">Göreve hazır mısın?</h2>
+                <p id="overlay-text">Üç can. Sonsuz uzay. Her isabet 100 puan.</p>
+                <div class="overlay-scores" id="overlay-scores" hidden><div><span>SKORUN</span><strong id="final-score">0</strong></div><div><span>REKORUN</span><strong id="final-best">0</strong></div></div>
+                <button id="play-button" type="button">Oyuna başla</button>
+                <button id="menu-button" class="menu-button" type="button" hidden>Menüye dön</button>
+                <p class="overlay-hint" id="overlay-hint">Enter veya R ile de başlayabilirsin.</p>
+              </div>
+            </div>
             <span class="corner top-left" aria-hidden="true"></span>
             <span class="corner top-right" aria-hidden="true"></span>
             <span class="corner bottom-left" aria-hidden="true"></span>
             <span class="corner bottom-right" aria-hidden="true"></span>
+          </div>
+          <div class="mobile-controls" id="mobile-controls">
+            <div class="mobile-options"><label for="control-mode">Kontroller</label><select id="control-mode"><option value="drag">Drag &amp; Fire</option><option value="tilt">Tilt &amp; Tap</option></select><button id="enable-tilt" type="button" hidden>Eğimi etkinleştir</button><button id="calibrate-tilt" type="button" hidden disabled>Kalibre et</button></div>
+            <p id="mobile-status" role="status">Gemini yatay sürükle. Sağdaki küçük düğmeyle ateş et.</p>
           </div>
           <p id="game-error" class="game-error" role="alert" hidden></p>
           <div class="controls-bar" id="controls-hint">
@@ -47,14 +73,17 @@
               <span class="key-group arrow-group" aria-label="Ok tuşları"><kbd>↑</kbd><kbd>←</kbd><kbd>↓</kbd><kbd>→</kbd></span>
               <span class="move-label">Hareket et</span>
             </div>
-            <p class="focus-hint">Oyun alanını tıkla ya da <kbd>Tab</kbd> ile seç.</p>
+            <div class="control-guide"><kbd class="shoot-key">Space</kbd><span class="move-label">Ateş et · basılı tut</span></div>
+            <p class="focus-hint"><kbd>Enter</kbd> / <kbd>R</kbd> yeniden başlat</p>
           </div>
+          <p class="game-note">Her isabet +100 · Temasta −1 can · Kaçan düşman can götürmez.</p>
+          <p id="game-announcement" class="sr-only" role="status" aria-live="polite"></p>
         </section>
 
-        <footer class="site-footer"><span class="footer-note">Önce gemini tanı. Gerisi sonra.</span><span>VANILLA TYPESCRIPT <span aria-hidden="true">/</span> HTML5 CANVAS</span></footer>
+        <footer class="site-footer"><span class="footer-note" id="save-status">Rekorun bu tarayıcıda saklanır.</span><span id="pwa-status" role="status"></span><span>VANILLA TYPESCRIPT <span aria-hidden="true">/</span> HTML5 CANVAS</span></footer>
       </main>
     </div>
-    <noscript><p class="noscript-note">Uçuş testi için tarayıcınızda JavaScript etkin olmalıdır.</p></noscript>
+    <noscript><p class="noscript-note">Oynamak için tarayıcınızda JavaScript etkin olmalıdır.</p></noscript>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

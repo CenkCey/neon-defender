@@ -10,11 +10,24 @@
     "dev": "vite --host 127.0.0.1",
     "test": "node --experimental-strip-types --test tests/*.test.mjs",
     "typecheck": "tsc --noEmit",
-    "build": "tsc --noEmit && vite build",
-    "preview": "vite preview --host 127.0.0.1"
+    "build": "tsc --noEmit && vite build && node scripts/build-pwa.mjs",
+    "preview": "vite preview --host 127.0.0.1",
+    "play": "npm run build && npm run preview -- --port 5176 --strictPort --open",
+    "ios:sync": "npm run build && cap sync ios",
+    "ios:open": "cap open ios",
+    "ios:run": "npm run ios:sync && cap run ios"
   },
   "devDependencies": {
+    "@capacitor/cli": "8.5.3",
     "typescript": "7.0.2",
     "vite": "8.3.5"
+  },
+  "overrides": {
+    "xcode": { "uuid": "11.1.1" }
+  },
+  "dependencies": {
+    "@capacitor/app": "8.1.2",
+    "@capacitor/core": "8.5.3",
+    "@capacitor/ios": "8.5.3"
   }
 }

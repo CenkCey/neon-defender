@@ -14,7 +14,7 @@ test('gemi başlangıçta oyun alanı içinde yer alır', () => {
 test('hareket mesafesi saniye cinsinden delta time kullanır', () => {
   const player = { x: 200, y: 200 };
   updatePlayer(player, { x: 1, y: 0 }, 0.25, bounds);
-  near(player.x, 275);
+  near(player.x, 270);
   near(player.y, 200);
 });
 
@@ -30,7 +30,7 @@ test('30, 60 ve 144 frame aynı sürede aynı konuma ulaşır', () => {
   for (const fps of [30, 60, 144]) {
     const player = { x: 100, y: 200 };
     for (let frame = 0; frame < fps; frame++) updatePlayer(player, { x: 1, y: 0 }, 1 / fps, bounds);
-    near(player.x, 400);
+    near(player.x, 380);
   }
 });
 
